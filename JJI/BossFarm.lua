@@ -63,14 +63,14 @@ local DiscordSuccess,DiscordError = pcall(function()
 end)
 
 -- Min Damage Percentage
-getgenv().MinPercentage = 10
+getgenv().MinPercentage = 5
 local DmgSuccess,DmgError = pcall(function()
     local DmgConfig = 
         game:HttpGet("http://de3.bot-hosting.net:21824/jji/config/dmg?username="..LocalPlayer.Name)
     if DmgConfig ~= "None Found" and tonumber(DmgConfig)<=100 then
         getgenv().MinPercentage = DmgConfig
     else
-        getgenv().MinPercentage = 10
+        getgenv().MinPercentage = 5
     end
     print(MinPercentage)
 end)
