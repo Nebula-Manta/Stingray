@@ -1,10 +1,11 @@
 
-
-if not getgenv().Key then
-    getgenv().Key = readfile("Stingray_Key.txt")
-else
-    writefile("Stingray_Key.txt",getgenv().Key)
-end
+pcall(function()
+    if not getgenv().Key then
+        getgenv().Key = readfile("Stingray_Key.txt")
+    else
+        writefile("Stingray_Key.txt",getgenv().Key)
+    end
+end)
 
 local Script = [[
     print("Post request failure")
