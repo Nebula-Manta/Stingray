@@ -1,7 +1,6 @@
 
 
 local LocalPlayer = game:GetService("Players").LocalPlayer
-LocalPlayer:Kick("\n\nForce disconnection by Manta\nOngoing manual banwave")
 local CG = game:GetService("CoreGui")
 local TS = game:GetService("TweenService")
 
