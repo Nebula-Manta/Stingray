@@ -10,6 +10,10 @@ print("Script Loaded")
 -- Init --
 local StartTime = tick()
 local LocalPlayer = game:GetService("Players").LocalPlayer
+local RS, TS, TP, Debris, HTTP = game:GetService("ReplicatedStorage"), game:GetService("TweenService"),
+game:GetService("TeleportService"), game:GetService("Debris"), game:GetService("HttpService")
+local ServerRemotes = RS:WaitForChild("Remotes"):WaitForChild("Server")
+local ClientRemotes = RS:WaitForChild("Remotes"):WaitForChild("Client")
 
 -- Load Configs--
 
@@ -24,34 +28,26 @@ pcall(function()
 end)
 
 
--- Luck Boosts
-getgenv().LuckBoosts = {}
-local Used,LuckError = pcall(function()
-    local LuckConfigs = 
-        game:HttpGet("http://www.stingray-digital.online/jji/getconfig?username="..LocalPlayer.Name)
-    if LuckConfigs ~= "None Found" then
-        for Item in string.gmatch(LuckConfigs, "([^,]+)") do
-            Item = string.gsub(Item, "^%s+","")
-            table.insert(getgenv().LuckBoosts, Item)
-        end
-    else
-         getgenv().LuckBoosts = {"Luck Vial"}
-    end
-end)
-if not Used then
-    print("Luck Boosts Error:",LuckError)
-end
-
-
 -- Constants
-local Cats = {"Withered Beckoning Cat", "Wooden Beckoning Cat", "Polished Beckoning Cat"}
-local Loti = {"White Lotus","Sapphire Lotus","Jade Lotus","Iridescent Lotus"} -- Did you know the plural of Lotus is Loti 
-local Highlight = {"5 Demon Fingers","Maximum Scroll","Domain Shard","Iridescent Lotus","Polished Beckoning Cat","Sapphire Lotus","Fortune Gourd","Demon Finger","Energy Nature Scroll","Purified Curse Hand","Jade Lotus","Cloak of Inferno","Split Soul","Soul Robe","Playful Cloud","Ocean Blue Sailor's Vest","Deep Black Sailor's Vest","Demonic Tobi","Demonic Robe","Rotten Chains"}
+local LuckTable = {
+    Cats = {
+        [1] = "Polished Beckoning Cat",
+        [2] = "Wooden Beckoning Cat",
+        [3] = "Withered Beckoning Cat"
+    },
+    OneTime = {
+        [1] = "Fortune Gourd",
+        [2] = "Snake Charm",
+        [3] = "Luck Vial",
+        [4] = "Dumplings"
+    }
+}
+
 
 local QueueSuccess = "False"
 if Toggle == "ON" then
     local Queued, QueueFail = pcall(function()
-        queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/Nebula-Manta/Stingray/refs/heads/main/JJI/ChestCollection.lua"))()')()
+        queue_on_teleport('loadstring(game:HttpGet("http://www.stingray-digital.online/script/jji"))()')()
     end)
     if not Queued then
         print("Put this script inside your auto-execution folder:", QueueFail)
@@ -110,6 +106,29 @@ local function OpenChest()
     end
 end
 
+local function DetermineLuckBoosts()
+    local Boosts = {}
+    local Inventory = LocalPlayer.ReplicatedData.inventory
+    if LocalPlayer.ReplicatedData.luckBoost.duration.Value==0 then
+        for i,v in LuckTable.Cats do
+            if Inventory:FindFirstChild(v) then
+                if Inventory[v].Value>5 then
+                    table.insert(Boosts,v)
+                    break
+                end
+            end
+        end
+    end
+    for i,v in LuckTable.OneTime do
+        if Inventory:FindFirstChild(v) then
+            if Inventory[v].Value>5 then
+                table.insert(Boosts,v)
+            end
+        end
+    end
+    return Boosts
+end
+
 
 local function Click(Button)
     Button.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -137,29 +156,21 @@ repeat task.wait() until Mobs:FindFirstChildWhichIsA("Model")
 local Boss = Mobs:FindFirstChildWhichIsA("Model").Name
 
 -- Use boosts --
-local LotusActive = LocalPlayer.ReplicatedData.chestOverride
-local CatActive = LocalPlayer.ReplicatedData.luckBoost
-local LotusValue,CatValue = 0,0
 task.spawn(function()
-    for _, Item in pairs(getgenv().LuckBoosts) do
+    local LuckBoosts = DetermineLuckBoosts()
+    for i,v in pairs(LuckBoosts) do
+        ServerRemotes:WaitForChild("Data"):WaitForChild("EquipItem"):InvokeServer(v)
+        print("Used Luck Boost",v)
         task.wait()
-        if table.find(Loti,Item) and LotusActive.Value == 0 then
-            game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Data")
-                :WaitForChild("EquipItem"):InvokeServer(Item)
-            print(Item.." used")
-        end
-        task.wait(0.5)
-        if LotusActive.Value == 0 then
-            if (not table.find(Cats, Item)) or CatActive.duration.Value == 0 then
-                game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Server"):WaitForChild("Data")
-                    :WaitForChild("EquipItem"):InvokeServer(Item)
-                print(Item.." used")
-            end
-        end
     end
-    LotusValue = LotusActive.Value
-    CatValue = CatActive.amount.Value
+    local S, E = pcall(function()
+        writefile("JJI_LastBoss.txt", Boss)
+    end)
+    if not S then
+        print("Last boss config saving failed:", E)
+    end
 end)
+
 
 repeat
     task.wait()
@@ -168,7 +179,6 @@ until Drops:FindFirstChild("Chest") -- Could have used WaitForChild here, but I 
 local Items = "| "
 game:GetService("ReplicatedStorage").Remotes.Client.Notify.OnClientEvent:Connect(function(Message)
     local Item = string.match(Message, '">(.-)</font>')
-    print(Message)
     if not (string.find(Item,"Stat Point") or string.find(Item,"Level")) then
         if table.find(Highlight,Item) then
             Item = "**"..Item.."**"
@@ -178,12 +188,19 @@ game:GetService("ReplicatedStorage").Remotes.Client.Notify.OnClientEvent:Connect
 end)
 
 -- Overwrite chest collection function --
+local Items, HasGoodDrops, ChestsCollected = {}, false, 0
 local ChestsCollected = 0
-local s, e = pcall(function()
-    game:GetService("ReplicatedStorage").Remotes.Client.CollectChest.OnClientInvoke = function(Chest)
+local S, E = pcall(function()
+    ClientRemotes.CollectChest.OnClientInvoke = function(Chest, Loots)
         if Chest then
             ChestsCollected = ChestsCollected + 1
-            print("Chest Collected")
+            for _, Item in pairs(Loots) do
+                if table.find({"Special Grade", "Unique"}, Item[1]) then
+                    HasGoodDrops = true
+                    Item[2] = "**" .. Item[2] .. "**"
+                end
+                table.insert(Items, Item[2])
+            end
         end
         return {}
     end
@@ -207,38 +224,43 @@ repeat
 until not (Drops:FindFirstChild("Chest") or LootUI.Enabled)
 
 -- Send webhook message --
-local Sent,Error = pcall(function()
+local S, E = pcall(function()
     if getgenv().Webhook then
-        print("Sending webhook")
-        task.wait(2)
         local Executor = (identifyexecutor() or "None Found")
+        local Content = ""
+        if HasGoodDrops and DiscordPing ~= "None Found" then
+            Content = Content .. DiscordPing
+        end
+        Content = Content .. "\n-# [Debug Data] " .. "Executor: " .. Executor .. " | Script Loading Time: " ..
+                      tostring(ScriptLoading) .. " | Luck Boosts: (" .. tostring(table.concat(LuckBoosts,", ")) ..
+                      ") | Chests Collected: " .. tostring(ChestsCollected) ..
+                      " | Send a copy of this data to Manta if there's any issues"
+        print("Sending webhook")
         task.wait()
         local embed = {
             ["title"] = LocalPlayer.Name .. " has defeated " .. Boss .. " in " ..
                 tostring(math.floor((tick() - StartTime) * 10) / 10) .. " seconds",
-            ['description'] = "Collected Items: " .. Items,
+            ['description'] = "Collected Items: " .. table.concat(Items, " | "),
             ["color"] = tonumber(000000)
         }
-        local a = request({
+        request({
             Url = getgenv().Webhook,
             Headers = {
                 ['Content-Type'] = 'application/json'
             },
             Body = game:GetService("HttpService"):JSONEncode({
                 ['embeds'] = {embed},
-                ['content'] = "-# [Debug Data] "..
-                    "Executor: "..Executor..
-                    " | Script Loading Time: "..tostring(ScriptLoading)..
-                    " | Chests Collected: "..tostring(ChestsCollected)..
-                    " | Cat Boost: "..tostring(CatValue)..
-                    "x | Lotus Boost: "..tostring(LotusValue).." | Send a copy of this data to Manta if there's any issues",
+                ['content'] = Content,
                 ['avatar_url'] = "https://cdn.discordapp.com/attachments/1089257712900120576/1105570269055160422/archivector200300015.png"
             }),
             Method = "POST"
         })
-        print("Webhook sent!")
+        task.wait()
+        print("Webhook sent")
     end
 end)
+
+
 -- Click replay --
 task.wait()
     for i = 1, 10, 1 do
