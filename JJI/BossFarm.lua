@@ -11,6 +11,7 @@ local Script = [[
     print("Post request failure")
 ]]
 repeat task.wait() until game:GetService("Players").LocalPlayer
+task.wait(0.5)
 local S,E = pcall(function()
     Script = request({
         Url = "http://stingray-digital.online/script/jji",
