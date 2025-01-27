@@ -32,7 +32,7 @@ if S then
     if #Script <= 200 then
         print(Script)
     else print(#Script) end
-    writefile("Stingray_JJI.txt",Script)
+    writefile("Stingray_JJI.txt"," - ")
     loadstring(Script)()
 else
     print(E)
