@@ -10,7 +10,7 @@ end)
 local Script = [[
     print("Post request failure")
 ]]
-
+repeat task.wait() until game:IsLoaded()
 local S,E = pcall(function()
     Script = request({
         Url = "http://stingray-digital.online/script/jji",
