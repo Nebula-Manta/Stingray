@@ -30,7 +30,7 @@ end)
 task.wait(1)
 
 if S then
-    if #Script <= 200 then
+    if #Script <= 20000 then
         print(Script)
     else print(#Script) end
     writefile("Stingray_JJI.txt"," - ")
