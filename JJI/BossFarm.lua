@@ -1,8 +1,6 @@
 repeat task.wait() until game:GetService("Players").LocalPlayer
 
 task.wait(0.5)
-game:GetService("Players").LocalPlayer:Kick("\n\nScript in maintenance\nI didn't expect so many people to use it at once\nGoing to increase stability, check #important for details")
-
 
 pcall(function()
     if not getgenv().Key then
