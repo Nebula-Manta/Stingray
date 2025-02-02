@@ -1,61 +1,59 @@
 repeat task.wait() until game:GetService("Players").LocalPlayer
 task.wait(1)
-if game.Players.LocalPlayer then
-    game.Players.LocalPlayer:Kick("\n\nScript in maintenance\n\n")
-    return "Kicked"
-end
 
-task.wait(0.5)
+game.Players.LocalPlayer:Kick("\n\nScript in maintenance\n\n")
 
-pcall(function()
-    if not getgenv().Key then
-        getgenv().Key = readfile("Stingray_Key.txt")
-    else
-        writefile("Stingray_Key.txt",getgenv().Key)
-    end
-end)
+-- task.wait(0.5)
 
-local Script = [[
-    print("Post request failure")
-]]
+-- pcall(function()
+--     if not getgenv().Key then
+--         getgenv().Key = readfile("Stingray_Key.txt")
+--     else
+--         writefile("Stingray_Key.txt",getgenv().Key)
+--     end
+-- end)
 
-local S,E = pcall(function()
-    Script = request({
-        Url = "http://stingray-digital.online/script/jji",
-        Headers = {
-            ['Content-Type'] = 'application/json'
-        },
-        Body = game:GetService("HttpService"):JSONEncode({
-            key = tostring(getgenv().Key),
-            hwid = game:GetService("RbxAnalyticsService"):GetClientId(),
-            username = game:GetService("Players").LocalPlayer.Name
-        }),
-        Method = "POST"
-    }).Body
-end)
+-- local Script = [[
+--     print("Post request failure")
+-- ]]
 
-task.wait(1)
+-- local S,E = pcall(function()
+--     Script = request({
+--         Url = "http://stingray-digital.online/script/jji",
+--         Headers = {
+--             ['Content-Type'] = 'application/json'
+--         },
+--         Body = game:GetService("HttpService"):JSONEncode({
+--             key = tostring(getgenv().Key),
+--             hwid = game:GetService("RbxAnalyticsService"):GetClientId(),
+--             username = game:GetService("Players").LocalPlayer.Name
+--         }),
+--         Method = "POST"
+--     }).Body
+-- end)
 
-if #Script <= 20000 or (not S) then
-    repeat
-        local S,E = pcall(function()
-            Script = request({
-                Url = "http://stingray-digital.online/script/jji",
-                Headers = {
-                    ['Content-Type'] = 'application/json'
-                },
-                Body = game:GetService("HttpService"):JSONEncode({
-                    key = tostring(getgenv().Key),
-                    hwid = game:GetService("RbxAnalyticsService"):GetClientId(),
-                    username = game:GetService("Players").LocalPlayer.Name
-                }),
-                Method = "POST"
-            }).Body
-        end)
-        task.wait(2)
-    until #Script >= 20000
-else 
-    print(#Script) 
-end
+-- task.wait(1)
 
-loadstring(Script)()
+-- if #Script <= 20000 or (not S) then
+--     repeat
+--         local S,E = pcall(function()
+--             Script = request({
+--                 Url = "http://stingray-digital.online/script/jji",
+--                 Headers = {
+--                     ['Content-Type'] = 'application/json'
+--                 },
+--                 Body = game:GetService("HttpService"):JSONEncode({
+--                     key = tostring(getgenv().Key),
+--                     hwid = game:GetService("RbxAnalyticsService"):GetClientId(),
+--                     username = game:GetService("Players").LocalPlayer.Name
+--                 }),
+--                 Method = "POST"
+--             }).Body
+--         end)
+--         task.wait(2)
+--     until #Script >= 20000
+-- else 
+--     print(#Script) 
+-- end
+
+-- loadstring(Script)()
