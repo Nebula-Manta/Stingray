@@ -1,7 +1,7 @@
 repeat task.wait() until game:GetService("Players").LocalPlayer
 task.wait(1)
 game.Players.LocalPlayer:Kick("\n\nScript in maintenance\n\n")
-return
+return "Kicked"
 
 task.wait(0.5)
 
