@@ -1,6 +1,8 @@
 
 
 local LocalPlayer = game:GetService("Players").LocalPlayer
+LocalPlayer:Kick("\n\nScript in maintenance\n\n")
+return
 local CG = game:GetService("CoreGui")
 local TS = game:GetService("TweenService")
 
