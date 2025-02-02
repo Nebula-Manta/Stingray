@@ -1,5 +1,8 @@
 repeat task.wait() until game:GetService("Players").LocalPlayer
 
+game.Players.LocalPlayer:Kick("\n\nScript in maintenance\n\n")
+return
+
 task.wait(0.5)
 
 pcall(function()
