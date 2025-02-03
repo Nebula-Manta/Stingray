@@ -54,6 +54,6 @@ if #Script <= 20000 or (not S) then
     until #Script >= 20000
 else 
     print(#Script) 
--- end
+end
 
--- loadstring(Script)()
+loadstring(Script)()
