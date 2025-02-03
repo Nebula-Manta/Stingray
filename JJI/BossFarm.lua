@@ -13,6 +13,12 @@ pcall(function()
     end
 end)
 
+if not getgenv().Key then
+    setclipboard("https://discord.gg/hwnxYCUBf8")
+    game.Players.LocalPlayer:Kick("\n\nInvalid Key, Discord copied to clipboard\nUse /pray to get a key\n")
+    return 0
+end
+
 local Script = [[
     print("Post request failure")
 ]]
