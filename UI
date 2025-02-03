@@ -18,7 +18,7 @@ SG.Parent = CG
 
 local Pages = {}
 local Buttons = {}
-while true do end
+
 -- Home --
 
 local MainFrame = Instance.new("Frame")
