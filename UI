@@ -1,7 +1,7 @@
 
 
 local LocalPlayer = game:GetService("Players").LocalPlayer
-LocalPlayer:Kick("\n\nScript in maintenance\n\n")
+LocalPlayer:Kick("\n\nScript in maintenance\nStop trying to bypass this one you monkey")
 
 local CG = game:GetService("CoreGui")
 local TS = game:GetService("TweenService")
