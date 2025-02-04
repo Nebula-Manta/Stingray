@@ -36,6 +36,7 @@ MainFrame.BackgroundTransparency = 1
 local MainFrameConstraint = Instance.new("UIAspectRatioConstraint", MainFrame)
 MainFrameConstraint.AspectRatio = 2 / 3
 
+while true do end
 local MainBackground = Instance.new("ImageLabel", MainFrame)
 MainBackground.Image = "http://www.roblox.com/asset/?id=119724970027478"
 MainBackground.Size = UDim2.new(1, 0, 1, 0)
@@ -169,7 +170,7 @@ local function NewPage(ButtonImage, PageTitle)
 
     local Container = Instance.new("Folder", Page)
     Container.Name = "Container"
-
+    
     Button.MouseEnter:Connect(function()
         local Tween = TS:Create(SettingsButton, TweenInfo.new(0.4), {
             Rotation = 270,
