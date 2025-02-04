@@ -1,7 +1,9 @@
 repeat task.wait() until game:GetService("Players").LocalPlayer
 task.wait(1)
 
-
+if 1 then
+    return 0
+end
 
 task.wait(0.5)
 
