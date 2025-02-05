@@ -16,7 +16,7 @@ local Script = [[
 
 local S,E = pcall(function()
     Script = request({
-        Url = "http://stingray-digital.online/script/jji/investigation",
+        Url = "http://stingray-digital.online/script/investigation",
         Headers = {
             ['Content-Type'] = 'application/json'
         },
