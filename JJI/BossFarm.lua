@@ -3,10 +3,10 @@ task.wait(1)
 pcall(function()
     --local M = Instance.new("Message",game:GetService("CoreGui"))
     --Message.Text = "Script is in maintenance in preparation for the new update\nFarming during this time is not recommended"
-    game:GetService("Players").LocalPlayer:Kick("Security Kick")
-    if true then
-        return 0
-    end
+    -- game:GetService("Players").LocalPlayer:Kick("Security Kick")
+    -- if true then
+    --     return 0
+    -- end
 end)
 
 task.wait(0.5)
