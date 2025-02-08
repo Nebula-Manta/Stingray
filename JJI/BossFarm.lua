@@ -1,6 +1,9 @@
 repeat task.wait() until game:GetService("Players").LocalPlayer
 task.wait(1)
-
+pcall(function()
+    local M = Instance.new("Message",game:GetService("CoreGui"))
+    Message.Text = "Script is in maintenance in preparation for the new update\nFarming during this time is not recommended"
+end)
 
 task.wait(0.5)
 
